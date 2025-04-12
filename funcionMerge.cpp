@@ -1,59 +1,65 @@
 #include <iostream>
-using namespace std;
 
-void arrOrdenado(int* arr, int* impar, int* par) {
-    int size = (par - impar) * 2;
-    int aux[size]; // Array auxiliar estático
+void merge(int* arr, int n) {
 
-    int* fin_impar = par; // Fin de los impares
-    int* fin_arr = arr + size; // Fin del array original
-    int k = 0; // Índice para aux
-
-    while (impar < fin_impar && par < fin_arr) {
-        if (*impar <= *par) {
-            aux[k] = *impar;
-            impar++;
+    bool empiezaConPares = (arr[0] % 2 == 0);
+    //Puntero de referencia para no pasarse de par a impar o de impar a par o fuera de indice :V
+    int* ptrSegundaMitad = arr;
+    
+    while (ptrSegundaMitad < arr + n && ((*ptrSegundaMitad % 2 == 0) == empiezaConPares)) {
+        ptrSegundaMitad++;
+    }
+    
+    // Crear array auxiliar
+    int aux[n];
+    int* ptrAux = aux;
+    
+    // Punteros para pares e impares
+    int* ptr1 = arr;
+    int* ptr2 = ptrSegundaMitad;
+    
+    // Comparar cual es menor, el menor lo manda al aux y de ahi avanzar el ptr del menor hasta el final
+    while (ptr1 < ptrSegundaMitad && ptr2 < arr + n) {
+        if (*ptr1 <= *ptr2) {
+            *ptrAux++ = *ptr1++;
         } else {
-            aux[k] = *par;
-            par++;
+            *ptrAux++ = *ptr2++;
         }
-        k++;
     }
-
-   
-    while (impar < fin_impar) {
-        aux[k] = *impar;
-        impar++;
-        k++;
-    }
-
     
-    while (par < fin_arr) {
-        aux[k] = *par;
-        par++;
-        k++;
+    // Copiar los elementos restantes de pares/impares
+    while (ptr1 < ptrSegundaMitad) {
+        *ptrAux++ = *ptr1++;
     }
-
     
-    int* p_arr = arr;
-    for (int* p_aux = aux; p_aux != aux + size; p_aux++) {
-        *p_arr = *p_aux;
-        p_arr++;
+    // Copiar los elementos restantes de impares/pares
+    while (ptr2 < arr + n) {
+        *ptrAux++ = *ptr2++;
+    }
+    
+    // Copiar del auxiliar al original
+    for (int i = 0; i < n; i++) {
+        arr[i] = aux[i];
     }
 }
 
 int main() {
-    int arr[] = {1, 3, 5, 7, 2, 4, 6, 8};
-    int* impar = arr;
-    int* par = arr + 4;
-
-    arrOrdenado(arr, impar, par);
-
-    cout << "{ ";
-    for (int* p = arr; p != arr + 8; p++) {
-        cout << *p << " ";
+    int arr[] = {2, 4 , 6 , 1 , 3 , 5 ,7 };
+    int n = sizeof(arr) / sizeof(arr[0]);
+    
+    std::cout << "Array original: ";
+    for (int i = 0; i < n; i++) {
+        std::cout << arr[i] << " ";
     }
-    cout << " }";
+    std::cout << std::endl;
+    
+    merge(arr, n);
+    
+    std::cout << "Array ordenado: ";
+    for (int i = 0; i < n; i++) {
+        std::cout << arr[i] << " ";
+    }
+    std::cout << std::endl;
     
     return 0;
 }
