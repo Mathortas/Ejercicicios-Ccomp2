@@ -25,7 +25,7 @@ void imprimirArray(int *arr, int size) {
 
 int main() {
     int arr[] = {1, 3, 5, 7, 2, 4, 6, 8};
-    int n = sizeof(arr) / sizeof(arr[0]);
+    int n = *(&arr + 1) - arr; // Resta de punteros
     int *mitad = arr;
     while (mitad < arr + n && *mitad % 2 != 0) {
         mitad++;
