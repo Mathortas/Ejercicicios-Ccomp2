@@ -1,79 +1,61 @@
 #include <iostream>
 using namespace std;
 
-void printMatriz(int (*matriz)[3]) {
-    for(int (*fila)[3] = matriz; fila < matriz + 3; fila++) {
-        for(int *elemento = *fila; elemento < *fila + 3; elemento++) {
-            cout << *elemento << " ";
-        }
-        cout << endl;
-    }
+void printMatriz(int (*m)[3]) {
+    for (int (*f)[3] = m; f < m + 3; f++, cout << endl) 
+        for (int *e = *f; e < *f + 3; e++) 
+            cout << *e << " ";
 }
 
-bool verificarVictoria(int (*matriz)[3]) {
-    int contador = 0;
-    for(int (*fila)[3] = matriz; fila < matriz + 3; fila++) {
-        for(int *elemento = *fila; elemento < *fila + 3; elemento++) {
-            if(*elemento != contador++) {
+bool verificarVictoria(int (*m)[3]) {
+    for (int (*f)[3] = m, c = 0; f < m + 3; f++) 
+        for (int *e = *f; e < *f + 3; e++) 
+            if (*e != c++) 
                 return false;
-            }
-        }
-    }
     return true;
 }
 
-void moverCero(int (*matriz)[3], char direccion, int &fila0, int &col0) {
-    // Calcular nueva posición basada en la posición actual del 0
-    int nuevaFila = fila0;
-    int nuevaCol = col0;
+void moverCero(int (*m)[3], char dir, int &f0, int &c0) {
+    int nf = f0, nc = c0;
     
-    if(direccion == 'a') nuevaCol--;      // Izquierda
-    else if(direccion == 'w') nuevaFila--; // Arriba
-    else if(direccion == 's') nuevaFila++; // Abajo
-    else if(direccion == 'd') nuevaCol++;  // Derecha
+    if (dir == 'a') nc--;
+    else if (dir == 'w') nf--;
+    else if (dir == 's') nf++;
+    else if (dir == 'd') nc++;
     else {
-        cout << "Direccion no valida!\n";
+        cout << "Ingresa uno valido!\n";
         return;
     }
 
-    // Verificar límites
-    if(nuevaFila < 0 || nuevaFila >= 3 || nuevaCol < 0 || nuevaCol >= 3) {
-        cout << "Movimiento no permitido!\n";
+    if (nf < 0 || nf >= 3 || nc < 0 || nc >= 3) {
+        cout << "No puedes moverte ahi\n";
         return;
     }
-
-    int *pos0 = *(matriz + fila0) + col0;
-    int *nuevaPos = *(matriz + nuevaFila) + nuevaCol;
     
-    // Realizar el intercambio
-    *pos0 = *nuevaPos;
-    *nuevaPos = 0;
+    swap(*(*(m + f0) + c0), *(*(m + nf) + nc));
     
-    // Actualizar posición del 0
-    fila0 = nuevaFila;
-    col0 = nuevaCol;
+    f0 = nf;
+    c0 = nc;
 }
 
 int main() {
-
-    int Mat[3][3] = { {1, 3, 5}, {2, 8, 6}, {4, 7, 0} };
+    int Mat[3][3] = {
+        {1, 3, 5}, 
+        {2, 8, 6}, 
+        {4, 7, 0}
+    };
+    int f0 = 2, c0 = 2;
     
-    int fila0 = 2, 
-    int col0 = 2;
-    
-    while(!verificarVictoria(Mat)) {
+    while (!verificarVictoria(Mat)) {
         printMatriz(Mat);
-        
-        cout << "Ingrese movimiento (a=izq, w=arriba, s=abajo, d=der): ";
-        char movimiento;
-        cin >> movimiento;
-        
-        moverCero(Mat, movimiento, fila0, col0);
-        system("cls || clear"); 
+        cout << "\nMovimiento (a=izquierda, w=arriba, s=abajo, d=derecha): ";
+        char mov;
+        cin >> mov;
+        moverCero(Mat, mov, f0, c0);
+        system("cls||clear");
     }
     
     printMatriz(Mat);
-    cout << "Wenaaaa" << endl;
-    
+    cout << "\n¡Ganaste! Felicidades!\n";
     return 0;
 }
