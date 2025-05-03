@@ -16,26 +16,42 @@ bool verificarVictoria(int (*m)[3]) {
 }
 
 void moverCero(int (*m)[3], char dir, int &f0, int &c0) {
-    int nf = f0, nc = c0;
-    
-    if (dir == 'a') nc--;
-    else if (dir == 'w') nf--;
-    else if (dir == 's') nf++;
-    else if (dir == 'd') nc++;
-    else {
-        cout << "Ingresa uno valido!\n";
-        return;
-    }
+    int *ptr1 = *(m + f0) + c0; 
+    int *ptraux = nullptr; 
 
-    if (nf < 0 || nf >= 3 || nc < 0 || nc >= 3) {
-        cout << "No puedes moverte ahi\n";
-        return;
+    switch (dir) {
+        case 'a': 
+            if (c0 > 0) 
+                ptraux = ptr1 - 1;
+            break;
+        case 'w': 
+            if (f0 > 0) 
+                ptraux = *(m + f0 - 1) + c0;
+            break;
+        case 's': 
+            if (f0 < 2) 
+                ptraux = *(m + f0 + 1) + c0;
+            break;
+        case 'd': 
+            if (c0 < 2) 
+                ptraux = ptr1 + 1;
+            break;
+        default:
+            cout << "Ingresa una dirección válida (a, w, s, d)\n";
+            return;
     }
-    
-    swap(*(*(m + f0) + c0), *(*(m + nf) + nc));
-    
-    f0 = nf;
-    c0 = nc;
+    if (ptraux == nullptr) {
+        cout << "No puedes moverte ahí\n";
+        return;
+    } 
+    *ptr1 = *ptraux;
+    *ptraux = 0;   
+    switch (dir) {
+        case 'a': c0--; break;
+        case 'w': f0--; break;
+        case 's': f0++; break;
+        case 'd': c0++; break;
+    }
 }
 
 int main() {
