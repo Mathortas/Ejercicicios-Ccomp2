@@ -20,6 +20,9 @@ class MyIterator{
         return it != o.it;
     }
     
+			T* operator+(int a){
+							return it +a;
+			}
     
     
     
